@@ -1,9 +1,9 @@
 class Envelope {
 public:
-    float attackTime = 0.02f;   // segundos
+    float attackTime = 0.05f;   // segundos
     float decayTime = 0.05f;    // segundos
     float sustainLevel = 0.3f;  // 0.0 a 1.0
-    float releaseTime = 0.2f;   // segundos
+    float releaseTime = 0.5f;   // segundos
 
     enum State { OFF, ATTACK, DECAY, SUSTAIN, RELEASE };
     State state = OFF;

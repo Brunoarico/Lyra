@@ -3,7 +3,7 @@
 #include <cmath>
 
 
-#define NUM_CHANNELS 3  // Number of PolySynth instances
+#define NUM_CHANNELS 13  // Number of PolySynth instances
 #define MAX_VOICES 8     // Maximum voices per PolySynth
 
 #define MAX_HARMONICS 8  // Maximum harmonics for additive synthesis

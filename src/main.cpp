@@ -2,6 +2,7 @@
 #include <AudioKitHAL.h>
 #include "PolySynth.h"
 #include "Constants.h"
+#include "WaveformTable.h"
 
 AudioKit kit;
 
@@ -112,7 +113,7 @@ void setup() {
     setCpuFrequencyMhz(240);
     delay(1000);
     Serial.println("Iniciando PolySynth com MIDI serial e 8 canais");
-
+    WaveformTable::init();
     auto cfg = kit.defaultConfig(KitOutput);
     kit.begin(cfg);
 
@@ -128,19 +129,19 @@ void setup() {
     }
 
     // Inicializa synths com instrumentos diferentes para exemplo
-    synths[0] = new PolySynth(INSTR_SINE);
+    synths[0] = new PolySynth(INSTR_KARPLUS);
     synths[1] = new PolySynth(INSTR_SINE);
-    synths[2] = new PolySynth(INSTR_SINE);
-    synths[3] = new PolySynth(INSTR_SINE);
+    synths[2] = new PolySynth(INSTR_SQUARE);
+    synths[3] = new PolySynth(INSTR_KARPLUS);
     synths[4] = new PolySynth(INSTR_SINE);
-    synths[5] = new PolySynth(INSTR_SINE);
-    synths[6] = new PolySynth(INSTR_SINE);
+    synths[5] = new PolySynth(INSTR_SAWTOOTH);
+    synths[6] = new PolySynth(INSTR_SNARE);
     synths[7] = new PolySynth(INSTR_SINE);
     synths[8] = new PolySynth(INSTR_SINE);
     synths[9] = new PolySynth(INSTR_SINE);
-    /*synths[10] = new PolySynth(INSTR_FM);
+    synths[10] = new PolySynth(INSTR_SINE);
     synths[11] = new PolySynth(INSTR_SNARE);
-    synths[12] = new PolySynth(INSTR_FM);*/
+    synths[12] = new PolySynth(INSTR_FM);
     
     // Inicia cada synth
     for (int i = 0; i < NUM_CHANNELS; i++) {
