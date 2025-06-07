@@ -23,7 +23,7 @@ private:
     float phase = 0.0f;
     float phaseIncrement = 0.0f;
     float attackProgress = 0.0f;
-    float attackTime = 0.01f;
+    float attackTime = 0.08f;
     float deltaTime = 0.0f;
     uint32_t sampleRate = 44100;
     WaveformType waveform;

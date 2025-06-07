@@ -1,14 +1,13 @@
-#pragma once
+#ifndef ADDITIVE_VOICE_H
+#define ADDITIVE_VOICE_H
 
 #include "Voice.h"
-#include "MidiUtils.h"
-#include "Constants.h"
 #include <vector>
-#include <stdint.h>
+#include "../../src/Envelope.h"
 
 class AdditiveVoice : public Voice {
 public:
-    AdditiveVoice(int harmonics = 5);
+    AdditiveVoice(int harmonics = 3);
 
     void setSampleRate(uint32_t sr) override;
     void noteOn(uint8_t note, uint8_t velocity) override;
@@ -17,14 +16,19 @@ public:
     bool isActive() override;
     void resetPhase() override;
 
-    void setAmplitude(int harmonic, float amp); // controle externo
+    void setAmplitude(int harmonic, float amp);
+    void setGlobalGain(float gain);
 
 private:
     int numHarmonics;
     std::vector<float> amplitudes;
     std::vector<float> phases;
-    float frequency = 440.0f;
-    float velocityAmp = 1.0f;
-    uint32_t sampleRate = 44100;
-    bool active = false;
+    float frequency;
+    float velocityAmp;
+    float sampleRate;
+    float globalGain;
+    bool active;
+    Envelope env;
 };
+
+#endif

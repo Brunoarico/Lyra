@@ -27,7 +27,7 @@ class PolySynth {
 
 public:
 
-    PolySynth(InstrumentType type) : instrumentType(type) {
+    PolySynth(InstrumentType type) : instrumentType(type), sampleRate(44100) {
         for (int i = 0; i < MAX_VOICES; i++) {
             voices[i] = nullptr;
             active[i] = false;
@@ -40,51 +40,13 @@ public:
     void begin(uint32_t sr) {
         sampleRate = sr;
         envelope.setSampleRate(sr);
+        setupVoices();
+        setupEffects();
+    }
 
-        for (int i = 0; i < MAX_VOICES; i++) {
-            if (voices[i]) {
-                delete voices[i];
-                voices[i] = nullptr;
-            }
-        }
-
-        for (int i = 0; i < MAX_VOICES; i++) {
-            switch (instrumentType) {
-                case INSTR_FM:
-                    voices[i] = new FMVoice();
-                    break;
-                case INSTR_SNARE:
-                    voices[i] = new SnareVoice();
-                    break;
-                case INSTR_SINE:
-                    voices[i] = new OscillatorVoiceLUT(SINE);
-                    break;
-                case INSTR_SQUARE:
-                    voices[i] = new OscillatorVoiceLUT(SQUARE);
-                    break;
-                case INSTR_SAWTOOTH:
-                    voices[i] = new OscillatorVoiceLUT(SAWTOOTH);
-                    break;
-                case INSTR_TRIANGLE:
-                    voices[i] = new OscillatorVoiceLUT(TRIANGLE);
-                    break;
-                case INSTR_KARPLUS:
-                    voices[i] = new KarplusStrongVoice();
-                    break;
-                case INSTR_ADDITIVE:
-                    voices[i] = new AdditiveVoice(5);
-                    break;
-            }
-            voices[i]->setSampleRate(sr);
-        }
-
-        // Filtros e efeitos podem ser ativados aqui:
-        FilterEffect* filt = new FilterEffect(LOW_PASS, 1200.0f, 0.7f, sr);
-        //DelayEffect*  del  = new DelayEffect(sr, 250.0f, 0.4f);
-        ReverbEffect* rev  = new ReverbEffect(0.2f, sr);
-        fx.addEffect(filt);
-        //fx.addEffect(del);
-        fx.addEffect(rev);
+    void changeInstrument(uint8_t newInstrumentId) {
+        instrumentType = static_cast<InstrumentType>(newInstrumentId);
+        setupVoices(); // recria as vozes com o novo instrumento
     }
 
     ~PolySynth() {
@@ -136,7 +98,7 @@ public:
         size_t result = 0;
         int16_t* ptr = (int16_t*)buffer;
         int numSamples = bytes / 4; // Stereo: 2 canais * 2 bytes
-        float masterGain = 1.0f;
+        float masterGain = .8f;
 
         for (int i = 0; i < numSamples; i++) {
             float mix = 0.0f;
@@ -165,6 +127,59 @@ public:
         }
 
         return result;
+    }
+
+private:
+
+    void setupVoices() {
+        // Apaga vozes anteriores
+        for (int i = 0; i < MAX_VOICES; i++) {
+            if (voices[i]) {
+                delete voices[i];
+                voices[i] = nullptr;
+            }
+            active[i] = false;
+            notes[i] = 0;
+        }
+
+        // Cria novas vozes conforme o tipo de instrumento
+        for (int i = 0; i < MAX_VOICES; i++) {
+            switch (instrumentType) {
+                case INSTR_FM:
+                    voices[i] = new FMVoice(10.0f, 6.0f);
+                    break;
+                case INSTR_SNARE:
+                    voices[i] = new SnareVoice();
+                    break;
+                case INSTR_SINE:
+                    voices[i] = new OscillatorVoiceLUT(SINE);
+                    break;
+                case INSTR_SQUARE:
+                    voices[i] = new OscillatorVoiceLUT(SQUARE);
+                    break;
+                case INSTR_SAWTOOTH:
+                    voices[i] = new OscillatorVoiceLUT(SAWTOOTH);
+                    break;
+                case INSTR_TRIANGLE:
+                    voices[i] = new OscillatorVoiceLUT(TRIANGLE);
+                    break;
+                case INSTR_KARPLUS:
+                    voices[i] = new KarplusStrongVoice();
+                    break;
+                case INSTR_ADDITIVE:
+                    voices[i] = new AdditiveVoice(5);
+                    break;
+            }
+            voices[i]->setSampleRate(sampleRate);
+        }
+    }
+
+    void setupEffects() {
+        fx.clear();
+        // Ative aqui os efeitos desejados
+        // fx.addEffect(new FilterEffect(LOW_PASS, 1000.0f, 0.7f, sampleRate));
+        // fx.addEffect(new DelayEffect(sampleRate, 100.0f, 0.4f));
+        // fx.addEffect(new ReverbEffect(0.5f, sampleRate));
     }
 };
 

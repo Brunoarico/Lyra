@@ -1,3 +1,6 @@
+#ifndef ENVELOPE_H
+#define ENVELOPE_H
+
 class Envelope {
 public:
     float attackTime = 0.05f;   // segundos
@@ -64,4 +67,11 @@ public:
     bool isActive() {
         return state != OFF;
     }
+
+    // Retorna true se o envelope terminou (estado OFF)
+    bool finished() const {
+        return state == OFF;
+    }
 };
+
+#endif // ENVELOPE_H

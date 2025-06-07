@@ -20,7 +20,7 @@ void OscillatorVoiceLUT::noteOn(uint8_t note, uint8_t velocity) {
     float freq = noteToFreq(note);
     active = true;
     this->velocity = amplitudeNormalized(velocity);
-    freq = fmaxf(freq, 100.0f);
+    freq = fmaxf(freq, 120.0f);
     phaseIncrement = freq / sampleRate;
     attackProgress = 0.0f;
 }
